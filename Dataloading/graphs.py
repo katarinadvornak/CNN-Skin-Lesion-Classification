@@ -4,21 +4,28 @@ import seaborn as sns
 from loadmetadata import MetadataLoader
 from loadimages import ImageLoader
 
-# metadata_loader = MetadataLoader("HAM10000_metadata.csv")
-# metadata = metadata_loader.load_metadata()
+metadata_loader = MetadataLoader("HAM10000_metadata")
+metadata = metadata_loader.load_metadata()
 
-# MetadataLoader("HAM10000_metadata.csv")
-#image_loader = ImageLoader(
- #   "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1", 
- #   "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2 (1)", 
-#)
+print(f"metadata loading complete\n")
+print(metadata.head(5))
 
-metadata = pd.read_csv("HAM10000_metadata", delimiter=",")
 
-# Load the images and labels
-#images, labels = image_loader.load_images()
+image_loader = ImageLoader(
+ "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1", 
+ "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2", 
+)
 
-#print(f"Loaded {len(images)} images with corresponding labels.")
+
+try:
+    images, image_ids = image_loader.load_images()
+    print("Successfully loaded", len(images), "images.")
+except Exception as e:
+    print("Error loading images:", str(e))
+
+
+print(f"Loaded {len(images)} images with corresponding labels.")
+print(f"image ids: {image_ids}")
 
 
 #splitting the data depending on diseases

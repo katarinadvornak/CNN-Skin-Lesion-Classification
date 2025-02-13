@@ -9,6 +9,12 @@ class MetadataLoader:
         if self.metadata is None:
             self.metadata = pd.read_csv(self.metadata_path)
         return self.metadata
+    
+    def get_disease_label(self, image_id):
+        disease = self.metadata.loc[self.metadata['image_id'] == image_id, 'dx'].values
+        return disease[0] if disease else None
+ 
+
 
 
 
