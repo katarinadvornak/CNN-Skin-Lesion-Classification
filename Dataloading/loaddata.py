@@ -8,17 +8,17 @@ from loadimages import ImageLoader
 # metadata = metadata_loader.load_metadata()
 
 # MetadataLoader("HAM10000_metadata.csv")
-image_loader = ImageLoader(
-    "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1", 
-    "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2 (1)", 
-)
+#image_loader = ImageLoader(
+ #   "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1", 
+ #   "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2 (1)", 
+#)
 
-metadata = pd.read_csv("HAM10000_metadata.csv")
+metadata = pd.read_csv("HAM10000_metadata", delimiter=",")
 
 # Load the images and labels
-images, labels = image_loader.load_images()
+#images, labels = image_loader.load_images()
 
-print(f"Loaded {len(images)} images with corresponding labels.")
+#print(f"Loaded {len(images)} images with corresponding labels.")
 
 
 #splitting the data depending on diseases
