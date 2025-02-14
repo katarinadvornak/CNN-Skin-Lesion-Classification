@@ -1,0 +1,20 @@
+from tensorflow.keras.models import load_model
+from PIL import Image
+import numpy as np
+
+def load_and_preprocess_image(image_path, target_size=(8, 8)):
+    # Open the image
+    image = Image.open(image_path)
+    
+    # Resize the image
+    image = image.resize(target_size)
+    
+    # Convert the image to a numpy array and normalize pixel values to [0, 1]
+    image = np.array(image) / 255.0
+    
+    # Ensure the image has the shape (1, height, width, channels) for the model
+    image = np.expand_dims(image, axis=0)
+    
+    return image
+
+

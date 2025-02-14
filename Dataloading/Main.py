@@ -1,40 +1,29 @@
-from loadimages import ImageLoader
-
-# Define the paths
-image_folder1 = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1'
-image_folder2 = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2'
-metadata_path = 'HAM10000_metadata'
-
-image_loader = ImageLoader(
- image_folder1, 
- image_folder2, 
- metadata_path
-)
-
-# loading images
-
-try:
-    images, image_labels, image_ids = image_loader.load_images()
-    print("Successfully loaded", len(images), "images.")
-except Exception as e:
-    print("Error loading images:", str(e))
+import numpy as np 
+from tensorflow.keras.models import load_model
+from predictinglogic import load_and_preprocess_image
+from sklearn.preprocessing import LabelEncoder
+import pickle
 
 
-# counting rows/instances in metadata to see if it matches the number of images
-try:
-    numberrows = image_loader.count_rows()
-    print("There are", numberrows, "rows in metadata")
-    image_loader.print_rows(2)
+# Load the saved model
+model = load_model('skin_disease_model.h5')
 
-except Exception as e:
-    print("Error loading images:", str(e))
+# Load the label encoder from the pickle file
+with open('label_encoder.pkl', 'rb') as f:
+    label_encoder = pickle.load(f)
 
+# Path to the new image you want to predict
+image_path = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1/ISIC_0024349.jpg'
 
+# Preprocess the image
+image = load_and_preprocess_image(image_path)
 
+# Make a prediction
+predictions = model.predict(image)
 
+# Get the class with the highest probability
+predicted_class = np.argmax(predictions, axis=1)
 
-
-
-
-
-
+predicted_label = label_encoder.inverse_transform(predicted_class)
+# Print the predicted class
+print("Predicted disease:", predicted_label[0])
