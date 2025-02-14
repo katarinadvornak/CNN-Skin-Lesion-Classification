@@ -12,13 +12,13 @@ image_loader = ImageLoader(
 )
 
 # loading images
-'''
+
 try:
     images, image_labels, image_ids = image_loader.load_images()
     print("Successfully loaded", len(images), "images.")
 except Exception as e:
     print("Error loading images:", str(e))
-'''
+
 
 # counting rows/instances in metadata to see if it matches the number of images
 try:
@@ -28,6 +28,9 @@ try:
 
 except Exception as e:
     print("Error loading images:", str(e))
+
+
+
 
 
 
