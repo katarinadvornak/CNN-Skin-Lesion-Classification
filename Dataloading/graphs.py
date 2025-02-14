@@ -1,31 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from loadmetadata import MetadataLoader
-from loadimages import ImageLoader
 
-metadata_loader = MetadataLoader("HAM10000_metadata")
-metadata = metadata_loader.load_metadata()
+
+metadata_path = "HAM10000_metadata"
+metadata = pd.read_csv(metadata_path)
 
 print(f"metadata loading complete\n")
 print(metadata.head(5))
-
-
-image_loader = ImageLoader(
- "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1", 
- "/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2", 
-)
-
-
-try:
-    images, image_ids = image_loader.load_images()
-    print("Successfully loaded", len(images), "images.")
-except Exception as e:
-    print("Error loading images:", str(e))
-
-
-print(f"Loaded {len(images)} images with corresponding labels.")
-print(f"image ids: {image_ids}")
 
 
 #splitting the data depending on diseases
