@@ -34,6 +34,12 @@ def build_model(input_shape, num_classes):
         
         # three hidden layers 
         layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+        # After each convolutional layer we use MaxPooling layers. 
+        # They reduce the size of the data (height and width) coming from the convolutional layers. 
+        # The output is smaller in size, but the most important features from th original image stays.
+        # Max-pooling takes a small window (usually 2x2 or 3x3) and slides it across the image, selecting the maximum value in each window
+        # No learnable parameters, jthey just reduce computation time and avoid overfitting
+
         layers.MaxPooling2D((2, 2)),
         
         layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
