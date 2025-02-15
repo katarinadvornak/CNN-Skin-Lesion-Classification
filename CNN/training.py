@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 import os
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import load_model
 
 # Define the paths
 image_folder1 = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1'

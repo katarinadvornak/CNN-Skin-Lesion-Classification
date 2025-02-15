@@ -20,9 +20,9 @@ class ImageLoader:
 
     def load_metadata(self):
         """Loads the metadata CSV into a DataFrame."""
-        if self.metadata is None:  # Check if metadata is already loaded
+        if self.metadata is None: 
             try:
-                self.metadata = pd.read_csv(self.metadata_path)  # Load into self.metadata (not self.metadata_path)
+                self.metadata = pd.read_csv(self.metadata_path)  
                 print("Metadata loaded successfully.")
             except Exception as e:
                 print(f"Error loading metadata: {e}")
@@ -38,24 +38,23 @@ class ImageLoader:
         image = Image.open(image_path)
         image = image.resize(self.image_size)
         image = np.array(image)
-        image = image / 255.0  # Normalize pixel values to [0, 1]
+        image = image / 255.0
         return image
 
     def load_images(self):
         """Load images from both image folders and assign disease labels."""
-        # Loop through the image folders and load images
         for folder in [self.imagespart1, self.imagespart2]:
             for filename in os.listdir(folder):
                 image_path = os.path.join(folder, filename)
                 if image_path.endswith(('.jpg', '.png', '.jpeg')):
-                    image_id = filename.split('.')[0]  # Extract the image ID
+                    image_id = filename.split('.')[0]  
                     image = self.load_image(image_path)
 
-                    if image is not None:  # Only proceed if image loaded successfully
-                        disease = self.get_disease_label(image_id)  # Get disease label from metadata
+                    if image is not None:  
+                        disease = self.get_disease_label(image_id) 
                         if disease is None:
                             print(f"Warning: No disease label found for image ID {image_id}")
-                            continue  # Skip unlabeled images
+                            continue 
 
                         self.images.append(image)
                         self.image_ids.append(image_id)
@@ -74,6 +73,6 @@ class ImageLoader:
     def print_rows(self, num_rows=5):
         """Prints a specific number of rows from the metadata."""
         if self.metadata is not None:
-            print(self.metadata.head(num_rows))  # Prints the first 'num_rows' rows
+            print(self.metadata.head(num_rows)) 
         else:
             print("Error: Metadata not loaded.")

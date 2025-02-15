@@ -3,6 +3,8 @@ from tensorflow.keras.models import load_model
 from predictinglogic import load_and_preprocess_image
 from sklearn.preprocessing import LabelEncoder
 import pickle
+from training import metadata_path
+import pandas as pd
 
 
 # Load the saved model
@@ -14,6 +16,9 @@ with open('label_encoder.pkl', 'rb') as f:
 
 # Path to the new image you want to predict
 image_path = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1/ISIC_0024349.jpg'
+
+# Extract image ID from path
+image_id = image_path.split("/")[-1].replace(".jpg", "")
 
 # Preprocess the image
 image = load_and_preprocess_image(image_path)
@@ -27,3 +32,13 @@ predicted_class = np.argmax(predictions, axis=1)
 predicted_label = label_encoder.inverse_transform(predicted_class)
 # Print the predicted class
 print("Predicted disease:", predicted_label[0])
+
+# checking if the disease is correct:
+df = pd.read_csv(metadata_path)
+correctlabelrow = df[df.iloc[:, 1] == image_id] 
+if not correctlabelrow.empty:
+    correct_label = correctlabelrow.iloc[0, 2] 
+else:
+    correct_label = "Unknown"
+
+print("Correct disease:", correct_label)
