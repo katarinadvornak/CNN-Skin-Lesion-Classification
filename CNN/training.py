@@ -48,7 +48,7 @@ num_classes = y_train.shape[1]  # Number of unique disease classes
 model = build_model(input_shape, num_classes)
 
 # Train the model
-model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val), batch_size=32)
+model.fit(X_train, y_train, epochs=20, validation_data=(X_val, y_val), batch_size=32)
 
 # Save the trained model
 model.save('skin_disease_model.h5')

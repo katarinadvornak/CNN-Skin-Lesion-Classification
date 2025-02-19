@@ -73,7 +73,7 @@ def build_model(input_shape, num_classes):
         # X = input from previous layer
         # b = Bias
 
-        layers.Dense(128, activation='relu'),
+        layers.Dense(1152, activation='relu'),
         layers.Dense(num_classes, activation='softmax')
 
     ])

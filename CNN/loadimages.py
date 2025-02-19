@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 
 class ImageLoader:
-    def __init__(self, imagespart1, imagespart2, metadata_path, image_size=(8, 8)):
+    def __init__(self, imagespart1, imagespart2, metadata_path, image_size=(64, 64)):
         self.imagespart1 = imagespart1
         self.imagespart2 = imagespart2
         self.metadata_path = metadata_path

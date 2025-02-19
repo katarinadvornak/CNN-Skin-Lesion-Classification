@@ -15,7 +15,7 @@ with open('label_encoder.pkl', 'rb') as f:
     label_encoder = pickle.load(f)
 
 # Path to the new image you want to predict
-image_path = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1/ISIC_0024349.jpg'
+image_path = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2/ISIC_0029760.jpg'
 
 # Extract image ID from path
 image_id = image_path.split("/")[-1].replace(".jpg", "")

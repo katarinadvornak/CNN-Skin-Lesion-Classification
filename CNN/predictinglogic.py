@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 
-def load_and_preprocess_image(image_path, target_size=(8, 8)):
+def load_and_preprocess_image(image_path, target_size=(64, 64)):
     # Open the image
     image = Image.open(image_path)
     
