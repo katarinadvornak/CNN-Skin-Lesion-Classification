@@ -17,9 +17,9 @@ for disease, group in grouped_data:
     print(f"Group: {disease}")
     print()
 
-# Optionally, you can also save each group as a separate CSV file if needed
+# saving each group as separate CSV files
 for disease, group in grouped_data:
-    group.to_csv(f'{disease}_group.csv', index=False)  # Save each group as a CSV
+    group.to_csv(f'{disease}_group.csv', index=False)
 
 import matplotlib.pyplot as plt
 

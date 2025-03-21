@@ -39,23 +39,23 @@ except Exception as e:
 
 
 
-# Prepare dataset (split into train/validation + one-hot encode labels)
+# Preparing the dataset (split into train/validation + one-hot encode labels)
 X_train, X_val, y_train, y_val, label_encoder = prepare_data(images, image_labels)
 
-# Build model
+# Buildin the model
 input_shape = X_train.shape[1:]  # Shape of one image
 num_classes = y_train.shape[1]  # Number of unique disease classes
 model = build_model(input_shape, num_classes)
 
-# Train the model
+# Training the model
 model.fit(X_train, y_train, epochs=20, validation_data=(X_val, y_val), batch_size=32)
 
-# Save the trained model
+# Saving the trained model
 model.save('skin_disease_model.h5')
 
 print("Training complete. Model saved as 'skin_disease_model.h5'.")
 
-# Load the saved model
+# Loading the saved model
 model = load_model('skin_disease_model.h5')
 
 
