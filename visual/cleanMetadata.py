@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load your dataset (replace 'your_file.csv' with the actual file)
-df = pd.read_csv("/Users/katarinadvornak/team10/HAM10000_metadata.csv", delimiter=",")
+df = pd.read_csv('/Users/katarinadvornak/Desktop/Project 2-2/data/HAM10000_metadata.csv', delimiter=",")
 
 # Check for missing values in the 'age' column
 print(f"Missing values before imputation: {df['age'].isna().sum()}")
