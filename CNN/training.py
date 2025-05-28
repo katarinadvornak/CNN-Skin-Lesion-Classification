@@ -28,25 +28,21 @@ if __name__ == "__main__":
     images, image_labels, image_ids = image_loader.load_images()
     print(f"Successfully loaded {len(images)} images.")
 
-    # Split data
-    splitter = DataSplitter(val_size=0.2, test_size=0.1)
-    X_train, X_val, y_train, y_val, X_test, y_test, test_ids, label_encoder = splitter.split(images, image_labels, image_ids)
+     # Prepare labels
+    label_encoder = LabelEncoder()
+    integer_labels = label_encoder.fit_transform(image_labels)
+    one_hot_labels = to_categorical(integer_labels)
 
-    # Save test set if you want to use it later:
-    np.save('X_test.npy', X_test)
-    np.save('y_test.npy', y_test)
+    # Convert to numpy arrays
+    images = np.array(images)
+    image_ids = np.array(image_ids)
 
-    # X_train - The images used for training the CNN
-    # X_val - The images used to validate/test the model
-    # y_train - One-hot encoded labels (diseases) for the training images
-    # y_val - The one-hot encoded lables for the validation images
-    # label_encoder - the converter that converts disease names into numbers, that we use for splitting and predicting.
-
-    print("X_train shape:", X_train.shape)
-    print("y_train shape:", y_train.shape)
-    print("X_val shape:", X_val.shape)
-    print("y_val shape:", y_val.shape)
-
+    # Train-validation split
+    X_train, X_val, y_train, y_val, int_train, int_val, ids_train, ids_val = train_test_split(
+        images, one_hot_labels, integer_labels, image_ids,
+        test_size=0.2,
+        random_state=42
+    )  
 
 
     # counting rows/instances in metadata to see if it matches the number of images
@@ -58,9 +54,6 @@ if __name__ == "__main__":
     #   print("Error loading images:", str(e))
     #   exit()
 
-
-    # Saving the encoder for the disease lables, which we used in splitting the data, so we can use the same one in predicting the disease.
-    splitter.save_encoder('label_encoder.pkl')
 
     # Either load or build model
     if os.path.exists(model_path):
