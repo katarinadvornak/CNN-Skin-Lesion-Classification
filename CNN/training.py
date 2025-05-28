@@ -8,13 +8,14 @@ import os
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import load_model
 from splitting import DataSplitter  # or wherever you put it
+from tensorflow.keras.callbacks import EarlyStopping
 
 #model_path = 'skin_disease_model.keras'
 model_path = 'skin_disease_model128x128.keras' 
 
 # Define the paths
-image_folder1 = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_1'
-image_folder2 = '/Users/ninazorawska/Desktop/project 22/HAM10000_images_part_2'
+image_folder1 = '/Users/jakubb/Desktop/dataverse_files/HAM10000_images_part_1'
+image_folder2 = '/Users/jakubb/Desktop/dataverse_files/HAM10000_images_part_2'
 metadata_path = 'HAM10000_metadata'
 
 image_loader = ImageLoader(
@@ -71,8 +72,21 @@ if __name__ == "__main__":
         num_classes = y_train.shape[1]
         model = build_model(input_shape, num_classes)
 
+    early_stop = EarlyStopping(
+        monitor='val_loss',        # Also possible to use 'val_accuracy'
+        patience=5,                # Number of epochs with no improvement before stopping
+        restore_best_weights=True  # Restores weights from the best epoch
+    )
+
     # Train the model
-    model.fit(X_train, y_train, epochs=10, validation_data=(X_val, y_val), batch_size=32, shuffle=True)
+    model.fit(
+        X_train, y_train,
+        validation_data=(X_val, y_val),
+        epochs=50,  # Here we adjust epochs for early stoppping
+        batch_size=32,
+        shuffle=True,
+        callbacks=[early_stop]
+    )
 
     # Save the model
     model.save(model_path)
@@ -81,9 +95,9 @@ if __name__ == "__main__":
     with open('label_encoder.pkl', 'rb') as f:
         label_encoder = pickle.load(f)
 
-    print("Test image IDs:")
-    for img_id in test_ids:
-        print(img_id)
+    #print("Test image IDs:")
+    #for img_id in test_ids:
+    #    print(img_id)
 
 
 
