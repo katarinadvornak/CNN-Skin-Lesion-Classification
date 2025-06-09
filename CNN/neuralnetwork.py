@@ -1,65 +1,102 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models
+from tensorflow.keras import layers, models, optimizers
 from sklearn.model_selection import train_test_split
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pickle
+from tensorflow.keras import layers, models, optimizers, Input, Model
+from tensorflow.keras.layers import concatenate
 
+def build_model(image_shape, tabular_input_dim, num_classes, activation='relu', dropout_rate=0.3, learning_rate=1e-4):
+    # Image input branch
+    image_input = Input(shape=image_shape, name="image_input")
+    x = layers.Conv2D(32, (3, 3), padding='same')(image_input)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(activation)(x)
+    x = layers.MaxPooling2D((2, 2))(x)
 
-# Function to build the CNN model
-def build_model(input_shape, num_classes, activation='relu', dropout_rate=0.5, optimizer='adam'):
-    model = models.Sequential([
+    x = layers.Conv2D(64, (3, 3), padding='same')(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(activation)(x)
+    x = layers.MaxPooling2D((2, 2))(x)
 
-        # input layer
-        layers.InputLayer(input_shape=input_shape),
-        
-        # three hidden layers 
-        # 32 filters of size 3×3 will be applied and each filter slides across the image and produces one feature map.
-        # Since we have 32 filters, we get 32 output feature maps
-        # step by step what happens: 
-        #
-         #   1. Each of the 32 filters slides over the input image.
-         #   2. Each filter extracts a different feature (e.g., edges, corners, textures).
-         #   3. The output is 32 feature maps, stacked together.
-         #   4. The activation function (like ReLU) is applied to introduce non-linearity.
-         #   5. The feature maps are passed to the next layer (e.g., pooling or another convolutional layer).
-        #
+    x = layers.Conv2D(128, (3, 3), padding='same')(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(activation)(x)
+    x = layers.MaxPooling2D((2, 2))(x)
+    x = layers.Dropout(0.3)(x)
 
-        layers.Conv2D(32, (3, 3), activation=activation, padding='same'),
-        # After each convolutional layer we use MaxPooling layers. 
-        # They reduce the size of the data (height and width) coming from the convolutional layers. 
-        # The output is smaller in size, but the most important features from th original image stays.
-        # Max-pooling takes a small window (usually 2x2 or 3x3) and slides it across the image, selecting the maximum value in each window
-        # No learnable parameters, jthey just reduce computation time and avoid overfitting
-        layers.MaxPooling2D((2, 2)),
-        
-        layers.Conv2D(64, (3, 3), activation=activation, padding='same'),
-        layers.MaxPooling2D((2, 2)),
-        
-        layers.Conv2D(128, (3, 3), activation=activation, padding='same'),
-        layers.MaxPooling2D((2, 2)),
-        
-        # flatten means that we reshape the 2D vetor of images to a 1D vector 
-        layers.Flatten(),
+    x = layers.Conv2D(256, (3, 3), padding='same')(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation(activation)(x)
+    x = layers.MaxPooling2D((2, 2))(x)
+    x = layers.Dropout(0.4)(x)
 
-        # A Dense layer in TensorFlow/Keras is a fully connected (FC) layer, 
-        # Meaning every neuron in the layer is connected to every neuron in the previous layer. 
-        # The dense layer computes this formula: Output = Activation(W*X + b)
-        # W = weights
-        # X = input from previous layer
-        # b = Bias
+    x = layers.GlobalAveragePooling2D()(x)
 
-        layers.Dense(1152, activation=activation),
-        layers.Dropout(dropout_rate),  # 50% of neurons randomly turned off
-        layers.Dense(num_classes, activation='softmax')
+    # Tabular input branch
+    tabular_input = Input(shape=(tabular_input_dim,), name="tabular_input")
+    t = layers.Dense(64, activation=activation)(tabular_input)
+    t = layers.Dropout(dropout_rate)(t)
 
-    ])
-    
-    model.compile(optimizer=optimizer,
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy'])
-    
+    # Combine both branches
+    combined = concatenate([x, t])
+    combined = layers.Dense(128, activation=activation)(combined)
+    combined = layers.Dropout(dropout_rate)(combined)
+
+    output = layers.Dense(num_classes, activation='softmax')(combined)
+
+    model = Model(inputs=[image_input, tabular_input], outputs=output)
+
+    optimizer = optimizers.Adam(learning_rate=learning_rate)
+    model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
     model.summary()
+    return model
+
+# Function to build the CNN model with tunable hyperparameters for Keras Tuner
+def build_tunable_model(hp):
+    model = models.Sequential()
+
+    # input layer
+    model.add(layers.InputLayer(input_shape=(64, 64, 3)))  # default fixed input shape
+
+    # Tune number of convolutional layers (between 2 and 3)
+    for i in range(hp.Int("conv_layers", 1, 5)):
+        kernel_size = hp.Choice(f"conv_{i}_kernel_size", values=[3, 5])
+        activation = hp.Choice(f"conv_{i}_activation", values=["relu", "tanh", "sigmoid", "selu"])
+        # Each of the conv layers will have a tunable number of filters
+        model.add(layers.Conv2D(
+            filters=hp.Choice(f"conv_{i}_filters", values=[32, 64, 128]),
+            kernel_size=(kernel_size, kernel_size),
+            activation=activation,
+            padding='same'
+        ))
+        model.add(layers.MaxPooling2D((2, 2)))
+
+    model.add(layers.GlobalAveragePooling2D())
+
+
+    # Tune the number of neurons in the dense layer
+    model.add(layers.Dense(
+        units=hp.Int("dense_units", min_value=128, max_value=1152, step=128),
+        activation='relu'
+    ))
+
+    # Output layer (7 disease classes from your dataset)
+    model.add(layers.Dense(
+        units=hp.Int("num_classes", 7, 7),  # fixed to 7
+        activation='softmax'
+    ))
+
+    # Compile the model with tunable learning rate
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(
+            learning_rate=hp.Choice("lr", values=[1e-2, 1e-3, 1e-4])
+        ),
+        loss='categorical_crossentropy',
+        metrics=['accuracy']
+    )
 
     return model
 
