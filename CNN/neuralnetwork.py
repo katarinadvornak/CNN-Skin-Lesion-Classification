@@ -7,49 +7,46 @@ import pickle
 from tensorflow.keras import layers, models, optimizers, Input, Model
 from tensorflow.keras.layers import concatenate
 
-def build_model(image_shape, tabular_input_dim, num_classes, activation='relu', dropout_rate=0.3, learning_rate=1e-4):
-    # Image input branch
-    image_input = Input(shape=image_shape, name="image_input")
-    x = layers.Conv2D(32, (3, 3), padding='same')(image_input)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation(activation)(x)
-    x = layers.MaxPooling2D((2, 2))(x)
+def build_model(input_shape, num_classes, activation='relu', dropout_rate=0.3, learning_rate=1e-4):
+    model = models.Sequential([
 
-    x = layers.Conv2D(64, (3, 3), padding='same')(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation(activation)(x)
-    x = layers.MaxPooling2D((2, 2))(x)
+        layers.InputLayer(input_shape=input_shape),
 
-    x = layers.Conv2D(128, (3, 3), padding='same')(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation(activation)(x)
-    x = layers.MaxPooling2D((2, 2))(x)
-    x = layers.Dropout(0.3)(x)
+        layers.Conv2D(32, (3, 3), padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation(activation),
+        layers.MaxPooling2D((2, 2)),
 
-    x = layers.Conv2D(256, (3, 3), padding='same')(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation(activation)(x)
-    x = layers.MaxPooling2D((2, 2))(x)
-    x = layers.Dropout(0.4)(x)
+        layers.Conv2D(64, (3, 3), padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation(activation),
+        layers.MaxPooling2D((2, 2)),
 
-    x = layers.GlobalAveragePooling2D()(x)
+        layers.Conv2D(128, (3, 3), padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation(activation),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.3),
 
-    # Tabular input branch
-    tabular_input = Input(shape=(tabular_input_dim,), name="tabular_input")
-    t = layers.Dense(64, activation=activation)(tabular_input)
-    t = layers.Dropout(dropout_rate)(t)
+        layers.Conv2D(256, (3, 3), padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation(activation),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.4),
 
-    # Combine both branches
-    combined = concatenate([x, t])
-    combined = layers.Dense(128, activation=activation)(combined)
-    combined = layers.Dropout(dropout_rate)(combined)
+        layers.GlobalAveragePooling2D(),
 
-    output = layers.Dense(num_classes, activation='softmax')(combined)
+        layers.Dense(128, activation=activation),
+        layers.Dropout(dropout_rate),
 
-    model = Model(inputs=[image_input, tabular_input], outputs=output)
+        layers.Dense(num_classes, activation='softmax')
+    ])
 
     optimizer = optimizers.Adam(learning_rate=learning_rate)
-    model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
+    model.compile(optimizer=optimizer,
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy'])
 
     model.summary()
     return model
