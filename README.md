@@ -16,7 +16,7 @@ augmenting images, uisng the features or loading the preprocessed model VGG-16.
 1) Go to class training_with_features_weights
 2) Fill the paths for your images
 3) Fill in the path for the model you want to use. Use a model that was trained on patient features. (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-4) In class loadimages.py select the size of the images you want to load
+4) In class loadimages_features.py select the size of the images you want to load
 5) Run the training class and wait for the results on validation set
 
 --Version with augmentation (training)--
@@ -36,10 +36,8 @@ augmenting images, uisng the features or loading the preprocessed model VGG-16.
 4) Go to class training_with_features_augmentation.py
 5) Fill the paths for your images and select all the parameters like: number of epochs, , batch size, early stopping, learning rate adjuster 
 6) Fill in the path for the model you want to use. Use a model that was trained on patient features. (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-7) In class loadimages.py select the size of the images you want to load (the same size as augmented images have) !
+7) In class loadimages_features.py select the size of the images you want to load (the same size as augmented images have) !
 8) Run the training class and wait for the results on validation set
-
-
 
 --Testing on unseen data-- 
 1) Go to class cnn_tester.py
