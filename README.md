@@ -2,7 +2,10 @@ How to use the custom CNN:
 
 First download the folders with images from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T 
 
---Version with weights (training)--
+For the testing purposes we recommend using images size 28x28 (it works quickly) and running the version with class weights since it is the simplest and does not require additional 
+augmenting images, uisng the features or loading the preprocessed model VGG-16.
+
+--Version with class weights (training)--
 1) Go to class training_with_weights.py
 2) Fill the paths for your images and select all the parameters like: number of epochs, batch size, early stopping, learning rate adjuster 
 3) In class loadimages.py select the size of the images you want to load
