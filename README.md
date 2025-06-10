@@ -11,6 +11,11 @@ augmenting images, uisng the features or loading the preprocessed model VGG-16.
 3) In class loadimages.py select the size of the images you want to load
 4) Run the training class and wait for the results on validation set
 
+--Version with class weights using patient features (training)--
+1) Go to class training_with_weights
+2)
+
+
 --Version with augmentation (training)--
 1) Go to the class AugmentedImageGenerator
 2) Fill the necessary paths, destination folder for the output and parameters like image size and the transformations for augmented images like rotation_range=10 etc.
