@@ -8,7 +8,8 @@ augmenting images, uisng the features or loading the preprocessed model VGG-16.
 --Models--
 We uploaded three models, each trained with different methods:
  - "skin_disease_model64x64.features_weights.keras" model was trained on both patient features and images, using image size 64x64 and with the weights, as a data balancing technique. 
- - "
+ - "skin_disease_model.h5" was the first model we built, before balancing the dataset. It was built as a prototype, hence it doesn't take features into account.
+ - 
 
 --Version with class weights (training)--
 1) Go to class training_with_weights.py
