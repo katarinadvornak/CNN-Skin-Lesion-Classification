@@ -30,3 +30,22 @@ augmenting images, uisng the features or loading the preprocessed model VGG-16.
 2) Fill the necessary paths for images, used model and ID of specific image.
 3) Change the image size in predictinglogic.py to desired 
 4) Run the class Main.py and wait for prediction
+
+How to use the VGG-16 model:
+--Initial Training (Frozen Layers)--
+1) Go to vgg16_all_frozen.py.
+2) Fill the paths for your images and select all the parameters like number of epochs, batch size, and learning rate.
+3) The image size is set to 128x128 in load_images_and_labels function.
+4) Run the training class and wait for the results on the validation set.
+
+--Fine-tuning (Unfrozen Layers)--
+1) Go to vgg16_finetuning.py.
+2) Fill the paths for your images and select all the parameters like: number of epochs, batch size, early stopping, and learning rate adjuster.
+3) The image size is set to 128x128 in ImageDataGenerator.
+4) Run the fine-tuning class and wait for the results on the validation set.
+
+--Testing on Unseen Data--
+1) Go to vgg16_evaluation.py.
+2) Fill the necessary paths for testing images and the model.
+3) The image size is set to 128x128 for loading test images.
+4) Run the class and wait for results.
