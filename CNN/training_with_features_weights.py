@@ -1,6 +1,6 @@
 import pickle
 from loadimages import ImageLoader
-from neuralnetwork import build_model
+from neuralnetwork_features import build_model
 import pandas as pd
 from PIL import Image
 import numpy as np
