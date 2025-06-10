@@ -5,6 +5,11 @@ First download the folders with images from https://dataverse.harvard.edu/datase
 For the testing purposes we recommend using images size 28x28 (it works quickly) and running the version with class weights since it is the simplest and does not require additional 
 augmenting images, uisng the features or loading the preprocessed model VGG-16.
 
+--Models--
+We uploaded three models, each trained with different methods:
+ - "skin_disease_model64x64.features_weights.keras" model was trained on both patient features and images, using image size 64x64 and with the weights, as a data balancing technique. 
+ - "
+
 --Version with class weights (training)--
 1) Go to class training_with_weights.py
 2) Fill the paths for your images and select all the parameters like: number of epochs, batch size, early stopping, learning rate adjuster 
@@ -68,3 +73,5 @@ How to use the VGG-16 model:
 2) Fill the necessary paths for testing images and the model.
 3) The image size is set to 128x128 for loading test images.
 4) Run the class and wait for results.
+
+--
