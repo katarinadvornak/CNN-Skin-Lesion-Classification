@@ -7,8 +7,9 @@ augmenting images, uisng the features or loading the preprocessed model VGG-16.
 
 --Models--
 We uploaded three models, each trained with different methods:
- - "skin_disease_model64x64.features_weights.keras" model was trained on both patient features and images, using image size 64x64 and with the weights, as a data balancing technique. 
  - "skin_disease_model.h5" was the first model we built, before balancing the dataset. It was built as a prototype, hence it doesn't take features into account. Image size - 64x64
+ - "skin_disease_model64x64.features_weights.keras" model was trained on both patient features and images, using image size 64x64 and with the weights, as a data balancing technique. 
+ - "skin_disease_model64x64.featuresaugumented.keras" model was trained on both patient features and images , using image size 64x64 and with data augumentation, as a data balancing technique.
  - "TEST64x64aug.keras" model is trained using augumented data, however it wasn't trained on patient features. Image size - 64x64
 
 --Version with class weights (training)--
@@ -40,10 +41,11 @@ We uploaded three models, each trained with different methods:
 2) Fill the necessary paths, destination folder for the output and parameters like image size and the transformations for augmented images like rotation_range=10 etc.
 3) Run this class to augment the images
 4) Go to class training_with_features_augmentation.py
-5) Fill the paths for your images and select all the parameters like: number of epochs, , batch size, early stopping, learning rate adjuster 
-6) Fill in the path for the model you want to use. Use a model that was trained on patient features. (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-7) In class loadimages_features_aug.py select the size of the images you want to load (the same size as augmented images have) !
-8) Run the training class and wait for the results on validation set
+5) Fill the paths for your folder with augumented images, as well as both csv files with patient features for validation and training set. 
+6) In the loadimages_features_aug fill in both paths for both folders with the original images (part1 and part2)
+7) Fill in the path for the model you want to use. Use a model that was trained on patient features. (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
+8) In class loadimages_features_aug.py select the size of the images you want to load (the same size as augmented images have) !
+9) Run the training class and wait for the results on validation set
 
 --Testing on unseen data-- 
 1) Go to class cnn_tester.py
