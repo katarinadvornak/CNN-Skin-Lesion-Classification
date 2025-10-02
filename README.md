@@ -1,80 +1,90 @@
-How to use the custom CNN:
+# CNN Skin Lesion Classification
 
-First download the folders with images from https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T 
+This project provides a Convolutional Neural Network (CNN) for classifying skin lesion images. It supports training and testing with different strategies, including class weighting, patient features, and data augmentation. A VGG-16-based model is also included for transfer learning experiments.
 
-For the testing purposes we recommend using images size 28x28 (it works quickly) and running the version with class weights since it is the simplest and does not require additional 
-augmenting images, uisng the features or loading the preprocessed model VGG-16.
+---
 
---Models--
-We uploaded three models, each trained with different methods:
- - "skin_disease_model.h5" was the first model we built, before balancing the dataset. It was built as a prototype, hence it doesn't take features into account. Image size - 64x64
- - "skin_disease_model64x64.features_weights.keras" model was trained on both patient features and images, using image size 64x64 and with the weights, as a data balancing technique. 
- - "skin_disease_model64x64.featuresaugumented.keras" model was trained on both patient features and images , using image size 64x64 and with data augumentation, as a data balancing technique.
- - "TEST64x64aug.keras" model is trained using augumented data, however it wasn't trained on patient features. Image size - 64x64
+## Dataset
 
---Version with class weights (training)--
-1) Go to class training_with_weights.py
-2) Fill the paths for your images and select all the parameters like: number of epochs, batch size, early stopping, learning rate adjuster 
-3) Fill in the path for the model you want to use (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-4) In class loadimages.py select the size of the images you want to load
-5) Run the training class and wait for the results on validation set
+Download the dataset from [Harvard Dataverse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T).  
+For quick testing, we recommend resizing images to **28x28**.
 
---Version with class weights using patient features (training)--
-1) Go to class training_with_features_weights
-2) Fill the paths for your images
-3) Fill in the path for the model you want to use. Use a model that was trained on patient features. (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-4) In class loadimages_features_weights.py select the size of the images you want to load
-5) Run the training class and wait for the results on validation set
+---
 
---Version with augmentation (training)--
-1) Go to the class AugmentedImageGenerator
-2) Fill the necessary paths, destination folder for the output and parameters like image size and the transformations for augmented images like rotation_range=10 etc.
-3) Run this class to augment the images
-4) Go to class training_with_augmentation.py
-5) Fill the paths for your images and select all the parameters like: number of epochs, , batch size, early stopping, learning rate adjuster 
-6) Fill in the path for the model you want to use (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-7) In class loadimages.py select the size of the images you want to load (the same size as augmented images have) !
-8) Run the training class and wait for the results on validation set
+## Available Models
 
---Version with augmentation using patient features (training)--
-1) Go to the class AugmentedImageGenerator
-2) Fill the necessary paths, destination folder for the output and parameters like image size and the transformations for augmented images like rotation_range=10 etc.
-3) Run this class to augment the images
-4) Go to class training_with_features_augmentation.py
-5) Fill the paths for your folder with augumented images, as well as both csv files with patient features for validation and training set. 
-6) In the loadimages_features_aug fill in both paths for both folders with the original images (part1 and part2)
-7) Fill in the path for the model you want to use. Use a model that was trained on patient features. (In case the path doesn't exist / model doesn't exist, the class will automatically build a new model with that name and train it after)
-8) In class loadimages_features_aug.py select the size of the images you want to load (the same size as augmented images have) !
-9) Run the training class and wait for the results on validation set
+| Model | Description | Image Size |
+|-------|------------|------------|
+| `skin_disease_model.h5` | Prototype, no features, unbalanced dataset | 64x64 |
+| `skin_disease_model64x64.features_weights.keras` | Trained on patient features and images with class weights | 64x64 |
+| `skin_disease_model64x64.featuresaugmented.keras` | Trained on patient features and augmented images with class weights | 64x64 |
+| `TEST64x64aug.keras` | Trained on augmented images only, no patient features | 64x64 |
 
---Testing on unseen data-- 
-1) Go to class cnn_tester.py
-2) Fill the necessary paths for testing images at the bottom and image sizes
-3) Run the class and wait for results
+---
 
---Predicting one specific image--
-1) Go to class Main.py
-2) Fill the necessary paths for images, used model and ID of specific image.
-3) Change the image size in predictinglogic.py to desired 
-4) Run the class Main.py and wait for prediction
+## Training
 
-How to use the VGG-16 model:
---Initial Training (Frozen Layers)--
-1) Go to vgg16_all_frozen.py.
-2) Fill the paths for your images and select all the parameters like number of epochs, batch size, and learning rate.
-3) The image size is set to 128x128 in load_images_and_labels function.
-4) Run the training class and wait for the results on the validation set.
+### 1. Class Weights Only
+1. Edit `training_with_weights.py` to set image paths, parameters, and model path.
+2. Configure image size in `loadimages.py`.
+3. Run the training script.
 
---Fine-tuning (Unfrozen Layers)--
-1) Go to vgg16_finetuning.py.
-2) Fill the paths for your images and select all the parameters like: number of epochs, batch size, early stopping, and learning rate adjuster.
-3) The image size is set to 128x128 in ImageDataGenerator.
-4) Run the fine-tuning class and wait for the results on the validation set.
+### 2. Class Weights + Patient Features
+1. Edit `training_with_features_weights.py` to set image paths and model path.
+2. Configure image size in `loadimages_features_weights.py`.
+3. Run the training script.
 
---Testing on Unseen Data--
-1) Go to vgg16_evaluation.py.
-2) Fill the necessary paths for testing images and the model.
-3) The image size is set to 128x128 for loading test images.
-4) Run the class and wait for results.
+### 3. Augmentation Only
+1. Use `AugmentedImageGenerator` to generate augmented images.
+2. Edit `training_with_augmentation.py` with parameters and model path.
+3. Configure image size in `loadimages.py`.
+4. Run the training script.
 
---
+### 4. Augmentation + Patient Features
+1. Generate augmented images with `AugmentedImageGenerator`.
+2. Edit `training_with_features_augmentation.py` to set image paths, CSV patient data paths, and model path.
+3. Configure image size in `loadimages_features_aug.py`.
+4. Run the training script.
+
+---
+
+## Testing
+
+### On Unseen Data
+1. Edit paths and image size in `cnn_tester.py`.
+2. Run the script to get results.
+
+### Single Image Prediction
+1. Edit paths, model, and image ID in `Main.py`.
+2. Adjust image size in `predictinglogic.py`.
+3. Run `Main.py` to predict a specific image.
+
+---
+
+## VGG-16 Models
+
+### Initial Training (Frozen Layers)
+1. Edit `vgg16_all_frozen.py` for image paths and parameters.
+2. Image size is **128x128**.
+3. Run the script.
+
+### Fine-Tuning (Unfrozen Layers)
+1. Edit `vgg16_finetuning.py` for image paths and parameters.
+2. Image size is **128x128**.
+3. Run the script.
+
+### Testing
+1. Edit `vgg16_evaluation.py` for test images and model.
+2. Image size is **128x128**.
+3. Run the script.
+
+---
+
+## Notes
+- Models are automatically created if the specified path does not exist.  
+- Recommended starting point for quick testing: **28x28 images with class weights**.  
+
+---
+
+## License
+[MIT License](LICENSE)
